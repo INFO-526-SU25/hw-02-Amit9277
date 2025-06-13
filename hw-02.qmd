@@ -29,7 +29,10 @@ pacman::p_load(tidyverse,
                janitor,
                readr,
                stringr,
-               lubridate)
+               lubridate,
+               ggforce,
+               tibble,
+               palmerpenguins)
 
 # set theme for ggplot2
 ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14))
@@ -330,6 +333,52 @@ ggplot(housing_q, aes(x = year_quarter, y = price, group = 1)) +
 ## 4 - Expect More. Plot More.
 
 ```{r}
+
+# Define radii
+R_outer <- 1
+R_inner <- 0.6
+R_dot   <- 0.333
+
+# Define circles using tribble
+circles <- tribble(
+  ~x0, ~y0, ~r,     ~fill,
+  0,   0,   R_outer, "#CC0000",
+  0,   0,   R_inner, "white",
+  0,   0,   R_dot,   "#CC0000"
+)
+
+# Create the plot using |> and better aes mapping
+circles |>
+  ggplot() +
+  geom_circle(
+    aes(x0 = x0, y0 = y0, r = r, fill = fill),
+    color = NA
+  ) +
+  scale_fill_identity() +
+  annotate(
+    "text",
+    x = 0,
+    y = -1.2,
+    label = "TARGET",
+    family = "sans",
+    fontface = "bold",
+    size = 10,
+    color = "#CC0000"
+  ) +
+  annotate(
+    "text",
+    x = 0.5,
+    y = -1.3,
+    label = "\u00AE",
+    family = "sans",
+    size = 5,
+    color = "#CC0000"
+  ) +
+  coord_fixed(ratio = 1) +
+  theme_void() +
+  theme(
+    plot.background = element_rect(fill = "white", color = NA)
+  )
 
 
 ```
