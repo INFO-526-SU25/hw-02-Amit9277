@@ -25,7 +25,8 @@ pacman::p_load(tidyverse,
                dplyr,
                gt,
                ggrepel,
-               patchwork)
+               patchwork,
+               janitor)
 
 # set theme for ggplot2
 ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14))
@@ -89,10 +90,57 @@ list_of_files <- dir_ls(path = "data", regexp = "Foreign Connected PAC")
 # keeping track of the file name in a new column called year
 pac <- read_csv(list_of_files, id = "year")
 
-pac |>
-  glimpse()
+#pac |>
+#  glimpse()
 
-head(pac)
+#head(pac)
+
+# Step 3: Clean column names
+pac_clean <- pac |> 
+  janitor::clean_names()
+
+# Step 4: Extract year from file path string
+pac_clean <- pac_clean |> 
+  mutate(year = str_extract(year, "\\d{4}"),  # Extracts 4-digit year
+         year = as.integer(year))
+
+# Step 5: Separate `country_of_origin_parent_company` into two columns
+pac_clean <- pac_clean |> 
+  separate(country_of_origin_parent_company, 
+           into = c("country", "parent_company"), 
+           sep = "/", 
+           fill = "right")
+
+# Step 6: Remove `$` and commas, then convert numeric columns
+pac_clean <- pac_clean |> 
+  mutate(across(c(total, dems, repubs), 
+                ~ parse_number(.x)))  # handles $ and commas
+
+# Step 7: Select and rename final columns
+pac_final <- pac_clean |> 
+  select(year,
+         pac_name_affiliate,
+         country,
+         parent_company,
+         dems,
+         repubs)
+
+# View the cleaned tibble
+pac_final
+
+# Continue from the cleaned pac_final dataset
+pac_long <- pac_final |> 
+  pivot_longer(
+    cols = c(dems, repubs),
+    names_to = "party",
+    values_to = "amount"
+  ) |> 
+  mutate(
+    party = case_when(
+      party == "dems" ~ "Democrat",
+      party == "repubs" ~ "Republican"
+    )
+  )
 ```
 
 ## 3 - Median housing prices in the US
