@@ -1,17 +1,80 @@
 ---
 title: "HW 02"
-author: "INSERT YOUR NAME HERE"
+author: "Amit Chawla"
 format: 
   html:
     embed-resources: true
 toc: true
 ---
 
+### Packages & Setup
+
+```{r}
+
+if(!require(pacman))
+  install.packages("pacman")
+
+pacman::p_load(tidyverse,
+               here,
+               scales,
+               ggthemes,
+               ggridges,
+               dsbox,
+               glue,
+               fs,
+               dplyr,
+               gt,
+               ggrepel,
+               patchwork)
+
+# set theme for ggplot2
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 14))
+
+# set width of code output
+options(width = 65)
+
+# set figure parameters for knitr
+knitr::opts_chunk$set(
+  fig.width = 7,        # 7" width
+  fig.asp = 0.618,      # the golden ratio
+  fig.retina = 3,       # dpi multiplier for displaying HTML output on retina
+  fig.align = "center", # center align figures
+  dpi = 300             # higher dpi, sharper image
+)
+```
+
 ## 1 - A new day, a new plot, a new geom
 
 ```{r}
 #| label: label-me-1
 
+edibnb |>
+  glimpse()
+
+# Clean and prepare data
+edibnb_clean <- edibnb |>
+  filter(!is.na(neighbourhood), !is.na(review_scores_rating))
+
+# Create ordered neighborhood levels by median review score
+neighbourhood_order <- edibnb_clean |>
+  group_by(neighbourhood) |>
+  summarize(median_score = median(review_scores_rating, na.rm = TRUE), .groups = "drop") |>
+  arrange(median_score) |>
+  pull(neighbourhood)
+
+# Apply ordering to factor
+edibnb_clean <- edibnb_clean |>
+  mutate(neighbourhood = factor(neighbourhood, levels = neighbourhood_order))
+
+# Plot
+ggplot(edibnb_clean, aes(x = review_scores_rating, y = neighbourhood)) +
+  geom_density_ridges(scale = 1.2, rel_min_height = 0.01, fill = "#69b3a2", alpha = 0.7) +
+  theme_minimal() +
+  labs(
+    title = "Distribution of Airbnb Review Scores by Edinburgh Neighborhood",
+    x = "Review Score Rating",
+    y = "Neighborhood"
+  )
 ```
 
 ## 2 - Foreign Connected PACs
@@ -19,12 +82,21 @@ toc: true
 ```{r}
 #| label: label-me-2
 
+# get a list of files with "Foreign Connected PAC" in their names
+list_of_files <- dir_ls(path = "data", regexp = "Foreign Connected PAC")
+
+# read all files and row bind them
+# keeping track of the file name in a new column called year
+pac <- read_csv(list_of_files, id = "year")
+
+pac |>
+  glimpse()
+
+head(pac)
 ```
 
 ## 3 - Median housing prices in the US
 
-
 ## 4 - Expect More. Plot More.
-
 
 ## 5 - Mirror, mirror on the wall, who’s the ugliest of them all?
