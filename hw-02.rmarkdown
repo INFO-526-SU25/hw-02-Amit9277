@@ -7,7 +7,11 @@ format:
 toc: true
 ---
 
+
+
 ### Packages & Setup
+
+
 
 ```{r}
 
@@ -50,7 +54,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
 ## 1 - A new day, a new plot, a new geom
+
+
 
 ```{r}
 #| label: label-me-1
@@ -84,6 +92,8 @@ ggplot(edibnb_clean, aes(x = review_scores_rating, y = neighbourhood)) +
   )
 ```
 
+
+
 #### Interpretations
 
 The ridgeline plot illustrates the distribution of Airbnb review scores across different neighborhoods in Edinburgh, sorted by their **median review scores**. Most neighborhoods have review scores concentrated in the high 80s to high 90s range, indicating generally **positive guest experiences** throughout the city.
@@ -93,6 +103,8 @@ However, neighborhoods like **Haymarket, Newington, and Old Town** show slightly
 Overall, while Airbnb guests tend to rate their stays positively across all neighborhoods, this visualization helps identify **subtle differences in guest satisfaction** and could be useful for property owners or city tourism planners aiming to improve experiences in specific areas.
 
 ## 2 - Foreign Connected PACs
+
+
 
 ```{r}
 #| label: label-me-2
@@ -218,11 +230,15 @@ ggplot(ch_contributions, aes(x = year, y = total_contributions, color = party)) 
   )
 ```
 
+
+
 #### Remarks:
 
 Seems, like in the early 2000s most of the contributions were made to the Republican party compared to Democrat by Switzerland. Later on from the year 2007-2010 both parties got similar amount of investments. Furthermore, in the following years Republican party seems to be gaining a lot more contribution during the years from 2010-2021. And eventually in the end, after 2021 the Democrat started to catch-up and Republican observed a fall.
 
 ## 3 - Median housing prices in the US
+
+
 
 ```{r}
 # Load and clean median housing data
@@ -332,7 +348,11 @@ ggplot(housing_q, aes(x = year_quarter, y = price, group = 1)) +
   )
 ```
 
+
+
 ## 4 - Expect More. Plot More.
+
+
 
 ```{r}
 
@@ -384,6 +404,8 @@ circles |>
 
 ```
 
+
+
 #### References
 
 -   <https://ggforce.data-imaginist.com/reference/geom_circle.html>
@@ -391,6 +413,8 @@ circles |>
 -   <https://rdrr.io/cran/geomnet/man/geom_circle.html>
 
 ## 5 - Mirror, mirror on the wall, who’s the ugliest of them all?
+
+
 
 ```{r}
 
@@ -437,3 +461,4 @@ ggplot(data = penguins_clean, aes(
     legend.text = element_text(size = 12, color = "black")
   )
 ```
+
